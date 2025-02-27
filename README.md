@@ -4,7 +4,7 @@
 
 This repository contains the code for implementing the simulated patient in the study [**PSYCHE: A Multi-faceted Patient Simulation Framework for Evaluation of Psychiatric Assessment Conversational Agents**](https://arxiv.org/abs/2501.01594).
 
-The provided code enables the simulation of psychiatric patients as described in the PSYCHE framework. However, the system prompts required to run the simulated patient are not publicly available in this repository. Interested users must request the system prompts from the corresponding author and place them in the appropriate directory (`./data`) before running the code. This code contains the logic for how to implement the simulated patient in PSYCHE. The essential code is located in SP_utils.py and Test.py.
+The provided code enables the simulation of psychiatric patients as described in the PSYCHE framework. However, the system prompts required to run the simulated patient are not publicly available in this repository. Interested users must request the system prompts from the corresponding author and place them in the appropriate directory (`./data`) before running the code. This code contains the logic for how to implement the simulated patient in PSYCHE. The essential code is located in `SP_utils.py` and `Test.py.`.
 
 ## Installation and Execution Guide
 
