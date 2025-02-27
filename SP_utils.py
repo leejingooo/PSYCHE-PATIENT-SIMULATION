@@ -30,30 +30,28 @@ from collections import OrderedDict
 
 
 def get_api_key():
-    """API 키를 가져옴 (Retrieve API key)"""
-    if "name_correct" in st.session_state and st.session_state["name_correct"]:
-        return os.getenv("OPENAI_API_KEY")  # 로그인 키가 올바르면 환경 변수 사용
-    return st.session_state.get("api_key", None)  # 유저가 입력한 API 키 사용
+    """유저가 입력한 API 키가 있으면 반환 (Returns user-entered API key if available)"""
+    return st.session_state.get("api_key", None)
 
 
+# 기본 LLM 객체 생성 (API 키 없이)
+llm = ChatOpenAI(
+    temperature=0.7,
+    model="gpt-4o",
+)
+
+chat_llm = ChatOpenAI(
+    temperature=0.7,
+    model="gpt-4o",
+    streaming=True,
+    callbacks=[StreamingStdOutCallbackHandler()]
+)
+
+# 유저가 API 키를 입력했으면 적용
 api_key = get_api_key()
-
 if api_key:
-    llm = ChatOpenAI(
-        temperature=0.7,
-        model="gpt-4o",
-        openai_api_key=api_key
-    )
-
-    chat_llm = ChatOpenAI(
-        temperature=0.7,
-        model="gpt-4o",
-        streaming=True,
-        callbacks=[StreamingStdOutCallbackHandler()],
-        openai_api_key=api_key
-    )
-else:
-    st.error("🚨 API 키가 설정되지 않았습니다. (API key is not set.)")
+    llm.openai_api_key = api_key
+    chat_llm.openai_api_key = api_key
 
 firebase_ref = get_firebase_ref()
 
