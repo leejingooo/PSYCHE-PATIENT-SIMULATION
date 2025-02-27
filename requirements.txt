@@ -1,0 +1,13 @@
+streamlit
+langchain
+langchain_anthropic
+langchain_openai
+langchain-ollama
+openai
+anthropic
+firebase-admin
+pandas
+playwright
+python-dotenv
+requests
+pydantic
