@@ -140,25 +140,27 @@ def show_session_info():
         with st.sidebar:
             st.divider()
             st.write("### 세션 정보")
-            st.info(f"세션 ID: {get_session_id()}")
-            st.info(f"남은 시간: {minutes}분 {seconds}초")
+            st.info(f"Session ID: {get_session_id()}")
+            st.info(f"Time remaining: {minutes}분 {seconds}초")
 
 
 def main():
     if check_participant():
-        st.success(f"환영합니다, {st.session_state['name']}님!")
-        st.title("Patient Simulation에 오신 것을 환영합니다")
-        st.write("계속하려면 사이드바에서 페이지를 선택하세요.")
+        st.success(f"Welcome, {st.session_state['name']}님!")
+        st.title("Welcome to Patient Simulation")
+        st.write("Please select a page from the sidebar to continue.")
 
         # 세션 정보 표시
         show_session_info()
 
         # Playwright 설정 실행
-        with st.spinner("Playwright 설정 중..."):
+        with st.spinner("Setting up Playwright..."):
             if setup_playwright():
-                st.success("Playwright 설정이 성공적으로 완료되었습니다. 모든 브라우저가 설치되었습니다.")
+                st.success(
+                    "Playwright setup completed successfully. All browsers are installed.")
             else:
-                st.warning("Playwright 설정에 실패했습니다. 일부 기능이 제대로 작동하지 않을 수 있습니다.")
+                st.warning(
+                    "Playwright setup failed. Some features may not work properly.")
     else:
         st.stop()
 
