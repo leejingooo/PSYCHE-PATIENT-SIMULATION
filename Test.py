@@ -4,6 +4,25 @@ from firebase_config import get_firebase_ref
 from SP_utils import *
 import uuid
 
+api_key = get_api_key()
+
+if api_key:
+    llm = ChatOpenAI(
+        temperature=0.7,
+        model="gpt-4o",
+        openai_api_key=api_key
+    )
+
+    chat_llm = ChatOpenAI(
+        temperature=0.7,
+        model="gpt-4o",
+        streaming=True,
+        callbacks=[StreamingStdOutCallbackHandler()],
+        openai_api_key=api_key
+    )
+else:
+    st.error("🚨 API 키가 설정되지 않았습니다. (API key is not set.)")
+
 instructions = """
     환자 시뮬레이션 페이지에 오신 것을 환영합니다.
     
