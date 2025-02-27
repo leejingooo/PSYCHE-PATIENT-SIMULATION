@@ -15,18 +15,45 @@ from firebase_config import get_firebase_ref
 import time
 from collections import OrderedDict
 
-# Initialize the language models
-llm = ChatOpenAI(
-    temperature=0.7,
-    model="gpt-4o",
-)
+# # Initialize the language models
+# llm = ChatOpenAI(
+#     temperature=0.7,
+#     model="gpt-4o",
+# )
 
-chat_llm = ChatOpenAI(
-    temperature=0.7,
-    model="gpt-4o",
-    streaming=True,
-    callbacks=[StreamingStdOutCallbackHandler()]
-)
+# chat_llm = ChatOpenAI(
+#     temperature=0.7,
+#     model="gpt-4o",
+#     streaming=True,
+#     callbacks=[StreamingStdOutCallbackHandler()]
+# )
+
+
+def get_api_key():
+    """API 키를 가져옴 (Retrieve API key)"""
+    if "name_correct" in st.session_state and st.session_state["name_correct"]:
+        return os.getenv("OPENAI_API_KEY")  # 로그인 키가 올바르면 환경 변수 사용
+    return st.session_state.get("api_key", None)  # 유저가 입력한 API 키 사용
+
+
+api_key = get_api_key()
+
+if api_key:
+    llm = ChatOpenAI(
+        temperature=0.7,
+        model="gpt-4o",
+        openai_api_key=api_key
+    )
+
+    chat_llm = ChatOpenAI(
+        temperature=0.7,
+        model="gpt-4o",
+        streaming=True,
+        callbacks=[StreamingStdOutCallbackHandler()],
+        openai_api_key=api_key
+    )
+else:
+    st.error("🚨 API 키가 설정되지 않았습니다. (API key is not set.)")
 
 firebase_ref = get_firebase_ref()
 

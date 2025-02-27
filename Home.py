@@ -7,7 +7,7 @@ from datetime import datetime, timedelta
 SESSION_TIMEOUT = 15 * 60  # seconds
 
 st.set_page_config(
-    page_title="Client-Simulation Home",
+    page_title="Patient Simulation",
     page_icon="🔥",
 )
 
@@ -51,28 +51,77 @@ def setup_playwright():
         return False
 
 
+# def check_participant():
+#     # 세션 타임아웃 체크
+#     if not check_session_timeout():
+#         st.warning("세션이 만료되었습니다. 다시 로그인해 주세요.")
+#         return False
+
+#     def name_entered():
+#         if st.session_state["name_input"] in st.secrets["participant"]:
+#             st.session_state["name"] = st.session_state["name_input"]
+#             st.session_state["name_correct"] = True
+#             st.session_state.last_activity = datetime.now()  # 로그인 성공 시 활동 시간 갱신
+#         else:
+#             st.session_state["name_correct"] = False
+
+#     if "name" not in st.session_state or not st.session_state.get("name_correct", False):
+#         st.text_input(
+#             """로그인 키를 입력하십시오.""",
+#             on_change=name_entered,
+#             key="name_input"
+#         )
+#         if "name_correct" in st.session_state and not st.session_state["name_correct"]:
+#             st.error("😕 등록되지 않은 이름입니다.")
+#         return False
+#     else:
+#         return True
+
+
 def check_participant():
+    """사용자가 로그인 키 또는 OpenAI API 키를 입력하여 인증할 수 있도록 합니다.
+
+    Users can log in with a pre-registered key or provide their own OpenAI API key.
+    """
+
     # 세션 타임아웃 체크
     if not check_session_timeout():
-        st.warning("세션이 만료되었습니다. 다시 로그인해 주세요.")
+        st.warning(
+            "세션이 만료되었습니다. 다시 로그인해 주세요. (Session expired. Please log in again.)")
         return False
 
     def name_entered():
+        """사용자가 입력한 로그인 키를 확인"""
         if st.session_state["name_input"] in st.secrets["participant"]:
             st.session_state["name"] = st.session_state["name_input"]
             st.session_state["name_correct"] = True
+            st.session_state["api_key"] = os.getenv(
+                "OPENAI_API_KEY")  # 기본 API 키 사용
             st.session_state.last_activity = datetime.now()  # 로그인 성공 시 활동 시간 갱신
         else:
             st.session_state["name_correct"] = False
 
     if "name" not in st.session_state or not st.session_state.get("name_correct", False):
         st.text_input(
-            """"테스트" 라고 입력하세요 (쌍따옴표 제외). Please type "test" (without quotation marks)""",
+            "로그인 키를 입력하십시오. (Enter login key)",
             on_change=name_entered,
             key="name_input"
         )
+
         if "name_correct" in st.session_state and not st.session_state["name_correct"]:
-            st.error("😕 등록되지 않은 이름입니다.")
+            st.error("😕 등록되지 않은 이름입니다. (Unregistered login key.)")
+
+        st.markdown(
+            "또는 OpenAI API 키를 직접 입력할 수 있습니다. (Or enter your OpenAI API key directly.)")
+        user_api_key = st.text_input("OpenAI API Key", type="password")
+
+        if user_api_key:
+            st.session_state["api_key"] = user_api_key
+            st.session_state["name"] = "Guest"
+            st.session_state["name_correct"] = True  # API 키 입력 시에도 True로 설정
+            st.session_state.last_activity = datetime.now()
+            st.success("✅ API 키가 저장되었습니다. (API key saved.)")
+
         return False
     else:
         return True
@@ -97,7 +146,7 @@ def show_session_info():
 def main():
     if check_participant():
         st.success(f"환영합니다, {st.session_state['name']}님!")
-        st.title("Client-Simulation에 오신 것을 환영합니다")
+        st.title("Patient Simulation에 오신 것을 환영합니다")
         st.write("계속하려면 사이드바에서 페이지를 선택하세요.")
 
         # 세션 정보 표시
